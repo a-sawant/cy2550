@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+
+import sys
+import random
+
+#this is the array of argunments
+array = sys.argv
+
+word_file = open("words.txt", "r")
+words1 = word_file.read().split('\n')
+
+num_array = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+sym_array = ['~', '!', '@', '#', '$', '%', '^', '&', '*', '.', ':', ';']
+
+
+# print(words1)
+
+
+len1 = len(array)
+caps = False
+words = 4
+nums = 2
+symbol = 0
+
+i = 1
+
+while i < len1:
+    if array[i] == '-h':
+        print ("""
+usage: xkcdpwgen [-h] [-w WORDS] [-c CAPS] [-n NUMBERS] [-s SYMBOLS]
+Generate a secure, memorable password using the XKCD method
+optional arguments:
+    -h, --help            show this help message and exit
+    -w WORDS, --words WORDS
+                          include WORDS words in the password (default=4)
+    -c CAPS, --caps CAPS  capitalize the first letter of CAPS random words
+                          (default=0)
+    -n NUMBERS, --numbers NUMBERS
+                      insert NUMBERS random numbers in the password
+                      (default=0)
+-s SYMBOLS, --symbols SYMBOLS
+                      insert SYMBOLS random symbols in the password
+                      (default=0)""")
+        quit()
+    if array[i] == '-c':
+        caps = True
+    if array[i] == '-w':
+        i += 1
+        words = array[i]
+    if array[i] == '-n':
+        i += 1
+        nums = array[i]
+    if array[i] == '-s':
+        i += 1
+        symbol = array[i]
+    i += 1
+
+
+words = int(words)
+nums = int(nums)
+symbol = int(symbol)
+
+word_len = len(words1)
+sym_len = len(sym_array)
+num_len = len(num_array)
+output = []
+
+while words > 0:
+    rand = random.randint(0, word_len - 1)
+    output.append(words1[rand])
+    words -= 1
+
+#print(output)
+
+
+while nums > 0:
+    w_len = len(output)
+    rand = random.randint(0, w_len - 1)
+    rand2 = random.randint(0, num_len - 1)
+    temp_num = num_array[rand2]
+    output.insert(rand, temp_num)
+    nums -= 1
+
+
+while symbol > 0:
+    w_len = len(output)
+    rand = random.randint(0, w_len - 1)
+    rand2 = random.randint(0, sym_len - 1)
+    temp_s = sym_array[rand2]
+    output.insert(rand, temp_s)
+    symbol -= 1
+
+if caps == True:
+    i = len(output) - 1
+    while i > 0:
+        rand = random.randint(0, len(output) - 1)
+        output[rand] = output[rand].capitalize()
+        i -= 1
+
+final_output = ''
+
+for x in output:
+    final_output += x
+
+print(final_output)
